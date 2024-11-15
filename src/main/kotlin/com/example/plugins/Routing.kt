@@ -2,8 +2,13 @@ package com.example.plugins
 
 import com.example.exception.CustomException
 import com.example.request.BetsRequest
+import com.example.services.Award
+import com.example.services.AwardService
 import com.example.services.BetsService
-import com.example.services.PrizeDrawService
+import com.example.services.Lottery
+import com.example.services.LotteryService
+import com.example.services.Result
+import com.example.services.ResultService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.request.receive
@@ -12,7 +17,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 
-fun Application.configureBetsRouting(
+fun Application.configureBets(
     service: BetsService
 ) {
     routing {
@@ -26,8 +31,6 @@ fun Application.configureBetsRouting(
 
                     bets.bets.forEach {
                         it.validateLengthNumbers()
-                        it.validateRange()
-                        it.validateLottery()
                     }
                 }
 
@@ -41,20 +44,33 @@ fun Application.configureBetsRouting(
     }
 }
 
-fun Application.configurePrizeDrawRouting(
-    service: PrizeDrawService
+fun Application.configureResult(
+    service: ResultService
 ) {
     routing {
-        get("/prize_down") {
-            val responses = service.drawn()
-            if (responses.isEmpty()) {
-                call.respond(
-                    HttpStatusCode.NotFound,
-                    mapOf("Error" to "Nao teve usuario sorteado!")
-                )
-                return@get
+        get ("/result") {
+            try {
+                call.respond(HttpStatusCode.OK, service.all())
+            } catch (e: CustomException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.Unauthorized, mapOf("Error" to e.localizedMessage))
             }
-            call.respond(HttpStatusCode.OK, responses)
         }
     }
 }
+
+fun Application.configureLottery(
+    service: LotteryService
+) {
+    routing {
+        get ("/lottery") {
+            try {
+                call.respond(HttpStatusCode.OK, service.all())
+            } catch (e: CustomException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.Unauthorized, mapOf("Error" to e.localizedMessage))
+            }
+        }
+    }
+}
+

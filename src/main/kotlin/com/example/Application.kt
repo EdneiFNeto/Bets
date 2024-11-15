@@ -1,9 +1,11 @@
 package com.example
 
 import com.example.plugins.*
+import com.example.services.AwardServiceImpl
 import com.example.services.BetsServiceImpl
-import com.example.services.PrizeDrawService
+import com.example.services.LotteryServiceImpl
 import com.example.services.PrizeDrawServiceImpl
+import com.example.services.ResultServiceImpl
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
 import io.ktor.server.engine.embeddedServer
@@ -23,6 +25,7 @@ fun Application.module() {
 
     install(ContentNegotiation) { json() }
 
-    configureBetsRouting(BetsServiceImpl())
-    configurePrizeDrawRouting(PrizeDrawServiceImpl())
+    configureBets(BetsServiceImpl())
+    configureResult(ResultServiceImpl())
+    configureLottery(LotteryServiceImpl())
 }
