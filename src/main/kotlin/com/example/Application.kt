@@ -6,6 +6,7 @@ import com.example.services.BetsServiceImpl
 import com.example.services.LotteryServiceImpl
 import com.example.services.PrizeDrawServiceImpl
 import com.example.services.ResultServiceImpl
+import com.example.services.WinnerServiceImpl
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
 import io.ktor.server.engine.embeddedServer
@@ -28,4 +29,5 @@ fun Application.module() {
     configureBets(BetsServiceImpl())
     configureResult(ResultServiceImpl())
     configureLottery(LotteryServiceImpl())
+    configureWinner(WinnerServiceImpl())
 }

@@ -3,16 +3,17 @@ package com.example.request
 import com.example.exception.InvalidCPF
 import com.example.exception.InvalidName
 import com.example.exception.InvalidNumber
+import com.example.extension.currentDateTime
+import com.example.extension.getLengthTypeGame
+import com.example.extension.now
 import com.example.services.Award
 import com.example.services.Lottery
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Serializable
 data class BetsRequest(
     val player: Player,
-    val bets: List<Bets>
+    val bets: Bets
 )
 
 @Serializable
@@ -40,26 +41,15 @@ data class Bets(
     val value: Double,
     val award: Award,
     val lottery: List<Lottery>,
-    private val dateTime: String = LocalDateTime.now().current()
+    private val dateTime: String = now().currentDateTime()
 ) {
     fun validateLengthNumbers(): Boolean {
-        val existsNumber = numbers.find { it.length != getType(type) }
+        val existsNumber = numbers.find { it.length != type.getLengthTypeGame() }
         if (existsNumber != null) throw InvalidNumber(existsNumber)
         return true
     }
 }
 
-private fun LocalDateTime.current(): String {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    return this.format(formatter)
-}
-
-private fun getType(name: String): Int {
-    return when(name.uppercase()) {
-        Type.MILHAR.literal.uppercase() -> 4
-        else -> 0
-    }
-}
 
 enum class Type(val literal: String) {
     MILHAR("Milhar"),

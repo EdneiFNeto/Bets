@@ -2,13 +2,10 @@ package com.example.plugins
 
 import com.example.exception.CustomException
 import com.example.request.BetsRequest
-import com.example.services.Award
-import com.example.services.AwardService
 import com.example.services.BetsService
-import com.example.services.Lottery
 import com.example.services.LotteryService
-import com.example.services.Result
 import com.example.services.ResultService
+import com.example.services.WinnerService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.request.receive
@@ -22,19 +19,16 @@ fun Application.configureBets(
 ) {
     routing {
         post("/bets") {
-            val bets = call.receive<BetsRequest>()
+            val request = call.receive<BetsRequest>()
 
             try {
-                bets.apply {
+                request.apply {
                     player::validateCPF
                     player::validateName
-
-                    bets.bets.forEach {
-                        it.validateLengthNumbers()
-                    }
+                    bets.validateLengthNumbers()
                 }
 
-                service.save(bets)
+                service.insert(request)
                 call.respond(HttpStatusCode.OK, service.all())
             } catch (e: CustomException) {
                 e.printStackTrace()
@@ -64,6 +58,22 @@ fun Application.configureLottery(
 ) {
     routing {
         get ("/lottery") {
+            try {
+                call.respond(HttpStatusCode.OK, service.all())
+            } catch (e: CustomException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.Unauthorized, mapOf("Error" to e.localizedMessage))
+            }
+        }
+    }
+}
+
+
+fun Application.configureWinner(
+    service: WinnerService
+) {
+    routing {
+        get ("/winner") {
             try {
                 call.respond(HttpStatusCode.OK, service.all())
             } catch (e: CustomException) {

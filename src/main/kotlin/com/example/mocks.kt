@@ -1,5 +1,7 @@
 package com.example
 
+import com.example.extension.currentDate
+import com.example.extension.now
 import com.example.services.Lottery
 import com.example.services.Result
 
@@ -14,7 +16,7 @@ object Mocks {
         three = "0003",
         four = "0005",
         five = "0006",
-        date = "2024-01-01",
+        date = now().currentDate(),
         lottery = lottery
     )
 }
