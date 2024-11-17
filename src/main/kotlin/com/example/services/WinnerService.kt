@@ -3,8 +3,6 @@ package com.example.services
 import com.example.request.Player
 import kotlinx.serialization.Serializable
 
-private const val VALUE_AWARD_MILHAR = 4000.0
-
 interface WinnerService {
     fun all(hour: String): List<Winner>
 }
@@ -69,7 +67,7 @@ class WinnerServiceImpl : WinnerService {
             player = entity.player,
             numbers = numbers,
             value = totalValue,
-            receiveValue = (totalValue * numbers.size) * VALUE_AWARD_MILHAR,
+            receiveValue = (totalValue * numbers.size),
             award = listOf()
         )
     }
