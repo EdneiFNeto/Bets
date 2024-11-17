@@ -5,6 +5,7 @@ import com.example.extension.toAwardEntity
 import com.example.request.BetsRequest
 import com.example.request.Player
 import com.example.response.BetsResponse
+import kotlinx.serialization.Serializable
 
 internal var bets = mutableListOf<BetsRequest>()
 internal var numberEntity = mutableListOf<NumberEntity>()
@@ -49,6 +50,7 @@ data class NumberEntity(
     val value: Double
 )
 
+@Serializable
 data class AwardEntity(
     val id: Long,
     val one: Boolean,

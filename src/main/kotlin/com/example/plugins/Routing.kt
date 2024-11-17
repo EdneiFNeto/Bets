@@ -1,10 +1,12 @@
 package com.example.plugins
 
 import com.example.exception.CustomException
+import com.example.exception.WinnerNotFound
 import com.example.request.BetsRequest
 import com.example.services.BetsService
 import com.example.services.LotteryService
 import com.example.services.ResultService
+import com.example.services.WinnerRequest
 import com.example.services.WinnerService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -42,7 +44,7 @@ fun Application.configureResult(
     service: ResultService
 ) {
     routing {
-        get ("/result") {
+        get("/result") {
             try {
                 call.respond(HttpStatusCode.OK, service.all())
             } catch (e: CustomException) {
@@ -57,7 +59,7 @@ fun Application.configureLottery(
     service: LotteryService
 ) {
     routing {
-        get ("/lottery") {
+        get("/lottery") {
             try {
                 call.respond(HttpStatusCode.OK, service.all())
             } catch (e: CustomException) {
@@ -73,9 +75,14 @@ fun Application.configureWinner(
     service: WinnerService
 ) {
     routing {
-        get ("/winner") {
+        post ("/winner") {
             try {
-                call.respond(HttpStatusCode.OK, service.all())
+                val request = call.receive<WinnerRequest>()
+
+                val winners = service.all(hour = request.hour)
+                if (winners.isEmpty()) throw WinnerNotFound()
+
+                call.respond(HttpStatusCode.OK, winners)
             } catch (e: CustomException) {
                 e.printStackTrace()
                 call.respond(HttpStatusCode.Unauthorized, mapOf("Error" to e.localizedMessage))

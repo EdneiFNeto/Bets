@@ -3,7 +3,13 @@ package com.example.services
 import com.example.Mocks
 import kotlinx.serialization.Serializable
 
-internal var results = mutableListOf<Result>(Mocks.result)
+internal var results = mutableListOf<Result>(
+    Mocks.resultOne,
+    Mocks.resultTwo,
+    Mocks.resultThree,
+    Mocks.resultFour,
+    Mocks.resultFive
+)
 
 interface ResultService {
     fun all(): MutableList<Result>
